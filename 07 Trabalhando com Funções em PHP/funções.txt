@@ -1,0 +1,2 @@
+Funcões e Procedimentos.
+Parâmentros: valores obrigatórios ficam na esquerda.

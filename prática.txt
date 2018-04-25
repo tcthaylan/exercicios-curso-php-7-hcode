@@ -1,0 +1,11 @@
+isset - null rentorna false
+unset - transforma em null
+
+strtoupper
+strtolower
+ucfirst
+ucwords
+str_replace("valor_procurar", "valor_substituto", $string);
+strlen($string)
+strpos($string, "texto");
+substr($string, indice_inicio, indice_fim);
