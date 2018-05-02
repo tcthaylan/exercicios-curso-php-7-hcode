@@ -52,17 +52,21 @@ class Usuario {
         $sql = new Sql();
 
         $results = $sql->select("SELECT * FROM tb_usuarios WHERE idusuario = :ID", array(
-
             ':ID' => $id
         ));
 
         if (count($results) > 0) {
             
-            $this->setData($results);
+            $row = $results[0];
+
+            $this->setIdusuario($row['idusuario']);
+            $this->setDeslogin($row['deslogin']);
+            $this->setDessenha($row['dessenha']);
+            $this->setDtcadastro(new DateTime($row['dtcadastro']));
         }
     }
 
-    public static function getList() {
+    public static function getLista() {
 
         $sql = new Sql();
 
@@ -74,63 +78,49 @@ class Usuario {
         $sql = new Sql();
 
         return $sql->select("SELECT * FROM tb_usuarios WHERE deslogin LIKE :LOGIN", array(
-
-            ':LOGIN' => "%$login%"
+            'LOGIN' => "%$login%" 
         ));
-    } 
+    }
 
     public function login($login, $senha) {
+
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :SENHA", array(
+            ':LOGIN' => $login,
+            ':SENHA' => $senha
+        ));
+
+        if (count($results) > 0) {
+            
+            $row = $results[0];
+
+            $this->setIdusuario($row['idusuario']);
+            $this->setDeslogin($row['deslogin']);
+            $this->setDessenha($row['dessenha']);
+            $this->setDtcadastro(new DateTime($row['dtcadastro']));
+            
+        } else {
+
+            throw new Exception("Login e/ou senha inválidos");
+        }
+    }
+
+    public function insert($login, $senha) {
 
         $this->setDeslogin($login);
         $this->setDessenha($senha);
 
         $sql = new Sql();
 
-        $results = $sql->select("SELECT * FROM tb_usuarios WHERE deslogin = :LOGIN AND dessenha = :SENHA", array(
+        $sql->query("INSERT INTO tb_usuarios (deslogin, dessenha) VALUES (:LOGIN, :SENHA)", array(
 
             ':LOGIN' => $this->getDeslogin(),
             ':SENHA' => $this->getDessenha()
         ));
 
-        if (count($results) > 0) {
-            
-            $this->setData($results);
-
-        } else {
-
-            throw new Exception("Login e/ou senha inválido(s)");
-        }
-    }
-
-    public function setData($results) {
-
-        $row = $results[0];
-
-        $this->setIdusuario($row['idusuario']);
-        $this->setDeslogin($row['deslogin']);
-        $this->setDessenha($row['dessenha']);
-        $this->setDtcadastro(new DateTime($row['dtcadastro']));
-    }
-
-    public function delete($id) {
-
-        $sql = new Sql();
-
-        $sql->query("DELETE FROM tb_usuarios WHERE idusuario = :ID", array(
-
-            ':ID' => $id
-        ));
-    }
-
-    public function insert($login, $senha) {
-
-        $sql = new Sql();
-
-        $sql->query("INSERT INTO tb_usuarios(deslogin, dessenha) VALUES (:LOGIN, :SENHA)", array(
-
-            ':LOGIN' => $login,
-            ':SENHA' => $senha
-        ));
+        $this->setDeslogin('');
+        $this->setDessenha('');
     }
 
     public function update($login, $senha) {
@@ -148,10 +138,24 @@ class Usuario {
         ));
     }
 
+    public function delete() {
+
+        $sql = new Sql();
+
+        $sql->query("DELETE FROM tb_usuarios WHERE idusuario = :ID", array(
+            
+            ':ID' => $this->getIdusuario()
+        ));
+
+        $this->setIdusuario(0);
+        $this->setDeslogin('');
+        $this->setDessenha('');
+        $this->setDtcadastro(new DateTime());
+    }
+
     public function __toString() {
 
         return json_encode(array(
-
             'idusuario' => $this->getIdusuario(),
             'deslogin' => $this->getDeslogin(),
             'dessenha' => $this->getDessenha(),

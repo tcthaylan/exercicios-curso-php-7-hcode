@@ -2,6 +2,8 @@
 
 $images = scandir('images');
 
+//var_dump($images);
+
 $data = array();
 
 foreach ($images as $img) {
