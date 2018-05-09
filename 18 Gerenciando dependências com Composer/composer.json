@@ -1,0 +1,15 @@
+{
+    "name": "tcthaylan/composer",
+    "description": "Aula de php 7",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Thaylan Conceição",
+            "email": "tc.thaylan@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "monolog/monolog":"1.0.*"
+    }
+}

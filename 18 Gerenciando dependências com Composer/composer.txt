@@ -1,0 +1,4 @@
+composer -v
+composer init
+composer install
+composer update
